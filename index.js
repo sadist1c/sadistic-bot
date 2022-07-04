@@ -1,13 +1,15 @@
 const Discord = require("discord.js")
 require("dotenv").config()
 
+const generateImage = require("./generateImage")
 
-const TOKEN = "OTkyOTM2NDYxNDI0OTIyNjc0.GNpDno._EmVMxzU6UDUlJV5ggfSwso981wC03QwtyXipE"
+const TOKEN = "OTkyOTM2NDYxNDI0OTIyNjc0.GAYn3n.i4S12oEVB8FQDi7Z21sKCzh75gEZFzTKBZHyRY"
 
 const client = new Discord.Client({
     intents: [
         "GUILDS",
-        "GUILD_MESSAGES"
+        "GUILD_MESSAGES",
+        "GUILD_MEMBERS"
     ]
 })
 
@@ -19,6 +21,16 @@ client.on("messageCreate", (message) => {
     if (message.content == "hi"){
         message.reply("Hello World!")
     }
+})
+
+const welcomeChannelId = "993074961667330058"
+
+client.on("guildMemberAdd", async (member) => {
+    const img = await generateImage(member)
+    member.guild.channels.cache.get(welcomeChannelId).send({
+        content: `<@${member.id}> Welcome to the server!`,
+        files: [img]
+    })
 })
 
 client.login(process.env.TOKEN) 
